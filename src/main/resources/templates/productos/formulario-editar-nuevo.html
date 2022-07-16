@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<!--
+Copyright (c) Rufino Serrano. All rights reserved.
+-->
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <title>Nuevo producto - Kebab Islas Canarias</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+              integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+              crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+        <style>
+            body {
+                background-color: #fc5305;
+            }
+
+            h1, .error {
+                color: #ebebeb;
+            }
+        </style>
+    </head>
+
+    <body>
+        <header>
+            <div th:insert="fragments/navbar :: navbar"></div>
+        </header>
+
+        <main>
+            <h1 class="text-center mt-5"
+                th:text="${producto.codprod > 0} ? 'Editar producto' : 'Nuevo producto'"></h1>
+
+            <div class="container px-5 my-5">
+                <form id="nuevoProductoForm" method="POST"
+                      enctype="multipart/form-data"
+                      th:action="${producto.codprod > 0} ? @{/producto/editar/submit} : @{/producto/nuevo/submit}"
+                      th:object="${producto}"
+                      role="form">
+                    <input type="hidden"
+                           name="codprod"
+                           th:field="*{codprod}">
+                    <div class="form-floating mb-3">
+                        <input class="form-control"
+                               type="text"
+                               name="nombre"
+                               th:field="*{nombre}"
+                               placeholder="Nombre"
+                               th:errorclass="is-invalid">
+                        <label for="nombre">Nombre (por defecto: "Nuevo producto")</label>
+                        <div th:if="${#fields.hasErrors('nombre')}"
+                             th:errorclass="error"
+                             th:errors="*{nombre}"></div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input id="precio"
+                               class="form-control"
+                               type="number"
+                               step="any"
+                               name="precio"
+                               th:field="*{precio}"
+                               placeholder="0"
+                               th:errorclass="is-invalid">
+                        <label for="precio">Precio (€)</label>
+                        <div th:if="${#fields.hasErrors('precio')}"
+                             th:errorclass="error"
+                             th:errors="*{precio}"></div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input id="porcentaje-descuento"
+                               class="form-control"
+                               type="number"
+                               name="porcentajeDeOferta"                             
+                               min="0"
+                               max="100"
+                               th:field="*{porcentajeDeOferta}"
+                               placeholder="0"
+                               th:errorclass="is-invalid">
+                        <label for="porcentajeDeOferta">Porcentaje de oferta (por defecto: 0%)</label>
+                        <div th:if="${#fields.hasErrors('porcentajeDeOferta')}"
+                             th:errorclass="error"
+                             th:errors="*{porcentajeDeOferta}"></div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input id="precio-descuentado"
+                               class="form-control"
+                               type="number"
+                               name="precioDescuentado"
+                               step="any"
+                               placeholder="0">
+                        <label for="precioDescuentado">Precio descuentado (€)</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <select class="form-select"
+                                name="id_categoria">
+                            <option value="0">Categoría</option>
+                            <option th:each="categoria: ${categorias}"
+                                    th:value="${categoria.codcat}"
+                                    th:text="${categoria.nombre}"
+                                    >Categoría</option>
+                        </select>
+                        <div th:if="${#fields.hasErrors('categoria')}"
+                             th:errorclass="error"
+                             th:errors="*{categoria}"></div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <div class="form-check">
+                            <input id="disponible"
+                                   class="form-check-input"
+                                   type="checkbox"
+                                   name="disponible"
+                                   th:field="*{disponible}"
+                                   th:errorclass="is-invalid">
+                            <label class="form-check-label" for="disponible">
+                                Disponible
+                            </label>
+                            <div th:if="${#fields.hasErrors('disponible')}"
+                                 th:errorclass="error"
+                                 th:errors="*{disponible}"></div>
+                        </div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input class="form-control"
+                               type="file"
+                               name="file">
+                        <label for="file">Imagen</label>
+                    </div>
+                    <div class="d-grid">
+                        <button class="btn btn-danger btn-lg mb-3"
+                                type="submit"
+                                th:text="${producto.codprod > 0} ? 'Guardar cambios' : 'Añadir producto'"
+                                ></button>
+                        <a th:href="@{/gestion-productos}" class="btn btn-warning btn-lg">Regresar</a>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+        <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+        <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+
+        <script th:src="@{/js/precios.js}"></script>
+    </body>
+</html>

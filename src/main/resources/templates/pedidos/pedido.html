@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<!--
+Copyright (c) Rufino Serrano. All rights reserved.
+-->
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <title>Pedido - Kebab Islas Canarias</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+              integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+              crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+        <style>
+            body {
+                background-color: #fc5305;
+            }
+
+            label {
+                color: #FFDB58;
+            }
+
+            del {
+                color: red;
+            }
+
+            h1, h4, .error {
+                color: #ebebeb;
+            }
+        </style>
+    </head>
+    <body>
+
+        <header>
+            <div th:insert="fragments/navbar :: navbar"></div>
+        </header>
+
+        <main class="row p-4">
+            <h1 th:if="${carrito.size() == 0}">No se ha añadido ningún producto al pedido.</h1>
+            <h3 th:if="${carrito.size() == 0}"><a th:href="@{/}" class="link-warning">Regresar</a></h3>
+
+            <div class="col-md-12 col-lg-9" th:if="${carrito.size() > 0}">
+                <table class="table table-bordered border-dark text-center align-middle">
+                    <thead>
+                        <tr class="table-danger">
+                            <th scope="col" colspan="2">Producto</th>
+                            <th scope="col">Cantidad</th>
+                            <th scope="col">Precio</th>
+                            <th scope="col">Remover del pedido</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="producto : ${carrito}" class="table-warning">
+                    <div th:each="cantidad : ${producto}">
+                        <td><img
+                                width="170px" height="100px"
+                                th:src="@{/imagenes/{imagen}(imagen=${cantidad.key.imagen})}"></td>
+                        <td th:text="${cantidad.key.nombre}"></td>
+                        <td th:text="${cantidad.value}"></td>
+                        <td th:text="${(cantidad.key.precioConDescuento * cantidad.value) + '€'}"></td>
+                        <td><a th:href="@{/quitar-producto-de-pedido/{id}(id=${cantidad.key.codprod})}" class="btn btn-danger btn-lg">Quitar</a></td>
+                    </div>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-md-12 col-lg-3" th:if="${carrito.size() > 0}">
+                <form id="contactForm"
+                      method="POST"
+                      th:action="@{/realizar-pedido}"
+                      th:object="${pedido}"
+                      role="form">
+                    <div class="form-check mb-2">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               th:field="*{recogidaEnTienda}"
+                               th:errorclass="is-invalid"
+                               id="recoger-en-tienda">
+                        <label class="form-check-label mb-2" for="recoger-en-tienda">
+                            Recoger pedido en tienda
+                        </label>
+                        <div th:if="${#fields.hasErrors('recogidaEnTienda')}"
+                             th:errorclass="error"
+                             th:errors="*{recogidaEnTienda}"></div>
+                    </div>
+                    <div class="mb-2">
+                        <input class="form-control"
+                               type="text"
+                               th:field="*{direccionDeEnvio}"
+                               th:errorclass="is-invalid"
+                               id="direccion-envio"
+                               placeholder="Dirección de envío">
+                        <div th:if="${#fields.hasErrors('direccionDeEnvio')}"
+                             th:errorclass="error"
+                             th:errors="*{direccionDeEnvio}"></div>
+                    </div>
+
+                    <div class="mb-2">
+                        <h4 th:text="${'Precio total: ' + precioTotal + '€'}"></h4>
+                    </div>
+
+                    <button type="submit" class="btn btn-danger btn-lg">Realizar pago</button>
+                </form>
+            </div>
+        </main>
+
+        <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+
+        <script th:src="@{/js/direccion-pedido.js}"></script>
+    </body>
+</html>
