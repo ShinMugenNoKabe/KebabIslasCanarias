@@ -5,10 +5,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.MediaTypeFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author Rufino Serrano Cañas
@@ -30,5 +28,14 @@ public class FileController {
                 .contentType(MediaTypeFactory.getMediaType(file).orElse(MediaType.TEXT_PLAIN))
                 .body(file);
     }
+
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<NewFileResponse> storeFile(@RequestPart(value = "file") MultipartFile file) {
+        String newFileName = storageService.store(file);
+        return ResponseEntity.ok()
+                .body(new NewFileResponse(newFileName));
+    }
+
+    public record NewFileResponse(String fileName) {}
 
 }

@@ -1,14 +1,17 @@
 package es.rufino.kebab.services;
 
 import es.rufino.kebab.configuration.StorageProperties;
+import es.rufino.kebab.exceptions.storage.FileIsNotImageException;
 import es.rufino.kebab.exceptions.storage.StorageException;
 import es.rufino.kebab.exceptions.storage.StorageFileNotFoundException;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.UnsupportedMediaTypeStatusException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +20,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
@@ -33,6 +38,10 @@ public class FileSystemStorageService implements StorageService {
      */
     private final Path rootLocation;
 
+    private final List<MediaType> ACCEPTED_MEDIA_TYPES = List.of(
+            MediaType.IMAGE_JPEG, MediaType.IMAGE_PNG, MediaType.IMAGE_GIF
+    );
+
     public FileSystemStorageService(StorageProperties properties) {
         this.rootLocation = Paths.get(properties.IMAGES_FOLDER_LOCATION);
     }
@@ -45,7 +54,15 @@ public class FileSystemStorageService implements StorageService {
      */
     @Override
     public String store(MultipartFile file) {
-        String filename = StringUtils.cleanPath(file.getOriginalFilename());
+        if (file == null) {
+            throw new UnsupportedMediaTypeStatusException("The uploaded file is empty.");
+        }
+
+        if (!fileIsImage(file)) {
+            throw new FileIsNotImageException("The file is not an image.", ACCEPTED_MEDIA_TYPES);
+        }
+
+        String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         String extension = StringUtils.getFilenameExtension(filename);
         String justFilename = filename.replace("." + extension, "");
         String storedFilename = System.currentTimeMillis() + "_" + justFilename + "." + extension;
@@ -67,6 +84,10 @@ public class FileSystemStorageService implements StorageService {
         } catch (IOException e) {
             throw new StorageException("Failed to store file " + filename, e);
         }
+    }
+
+    private boolean fileIsImage(MultipartFile file) {
+        return Objects.requireNonNull(file.getContentType()).startsWith("image");
     }
 
     /**
