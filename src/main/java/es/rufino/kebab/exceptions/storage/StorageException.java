@@ -1,4 +1,4 @@
-package es.rufino.kebab.upload;
+package es.rufino.kebab.exceptions.storage;
 
 public class StorageException extends RuntimeException {
 
