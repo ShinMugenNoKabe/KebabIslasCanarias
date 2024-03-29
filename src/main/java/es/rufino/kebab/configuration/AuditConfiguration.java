@@ -1,21 +1,19 @@
-/*
- * Copyright (c) Rufino Serrano. All rights reserved.
- */
+package es.rufino.kebab.configuration;
 
-package es.rufino.kebab.configuracion;
-
-import es.rufino.kebab.upload.StorageProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /**
+ * Class used to set some configuration needed for Spring Boot.
  *
- * @author Rufino Serrano Cañas
+ * @author ShinMugenNoKabe
  */
 @Configuration
 @EnableJpaAuditing
+@EnableJpaRepositories(basePackages = "es.rufino.kebab.repositories")
 @EnableConfigurationProperties(StorageProperties.class)
-public class ConfiguracionAuditoria {
+public class AuditConfiguration {
 
 }
