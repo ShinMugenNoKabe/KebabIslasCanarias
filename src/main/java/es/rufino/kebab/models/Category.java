@@ -12,7 +12,6 @@ import jakarta.persistence.*;
  */
 @Entity
 @Data
-@Builder
 @Table(name = "categories")
 public class Category {
     

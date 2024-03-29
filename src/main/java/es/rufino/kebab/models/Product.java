@@ -15,7 +15,6 @@ import java.math.RoundingMode;
  */
 @Entity
 @Data
-@Builder
 @Table(name = "products")
 public class Product {
 
