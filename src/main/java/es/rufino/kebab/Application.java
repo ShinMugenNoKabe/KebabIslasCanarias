@@ -4,8 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * Clase principal, carga la aplicación de Spring Boot
- * @author Rufino Serrano Cañas
+ * Main Class. Loads the Spring Boot Application.
+ * @author ShinMugenNoKabe
  */
 @SpringBootApplication
 public class Application {
