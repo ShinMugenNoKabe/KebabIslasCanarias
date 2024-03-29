@@ -30,16 +30,5 @@ public class OrderLine {
     private Integer quantity;
     
     private BigDecimal totalPrice;
-
-    public OrderLine(Product product, Integer quantity) {
-        this.product = product;
-        this.quantity = quantity;
-        this.totalPrice = BigDecimal.valueOf(product.getSalePercentage() * quantity);
-    }
-
-    public OrderLine(Integer quantity, BigDecimal totalPrice) {
-        this.quantity = quantity;
-        this.totalPrice = totalPrice;
-    }
     
 }
