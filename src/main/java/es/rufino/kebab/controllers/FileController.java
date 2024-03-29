@@ -2,6 +2,8 @@ package es.rufino.kebab.controllers;
 
 import es.rufino.kebab.services.StorageService;
 import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
+import org.springframework.http.MediaTypeFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,11 +23,12 @@ public class FileController {
         this.storageService = storageService;
     }
 
-    // TODO: Fix this
-    @GetMapping("{filename:.+}")
+    @GetMapping("/{filename:.+}")
     public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
         Resource file = storageService.loadAsResource(filename);
-        return ResponseEntity.ok().body(file);
+        return ResponseEntity.ok()
+                .contentType(MediaTypeFactory.getMediaType(file).orElse(MediaType.TEXT_PLAIN))
+                .body(file);
     }
 
 }
