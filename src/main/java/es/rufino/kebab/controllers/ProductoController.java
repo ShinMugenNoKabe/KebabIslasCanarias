@@ -87,9 +87,9 @@ public class ProductoController {
 
     @GetMapping("/producto/nuevo")
     public String nuevoProductoForm(Model model, Principal principal) {
-        if (!userController.isUserAdmin(principal)) {
-            return "index";
-        }
+//        if (!userController.isUserAdmin(principal)) {
+//            return "index";
+//        }
 
 //        List<Category> categories;
 //        categories = categoryService.findAll();

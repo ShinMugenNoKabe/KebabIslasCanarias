@@ -7,8 +7,10 @@ import es.rufino.kebab.services.ProductService;
 import es.rufino.kebab.services.RoleService;
 import es.rufino.kebab.services.UserService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -22,6 +24,7 @@ import java.util.List;
  * @author ShinMugenNoKabe
  */
 @Component
+@RequiredArgsConstructor
 public class SetupDataLoader implements ApplicationListener<ContextRefreshedEvent> {
 
     private Boolean alreadySetup = false;
@@ -31,20 +34,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     private final UserService userService;
     private final CategoryService categoryService;
     private final ProductService productService;
-
-    public SetupDataLoader(
-            RoleService roleService,
-            PrivilegeRepository privilegeRepository,
-            UserService userService,
-            CategoryService categoryService,
-            ProductService productService
-    ) {
-        this.roleService = roleService;
-        this.privilegeRepository = privilegeRepository;
-        this.userService = userService;
-        this.categoryService = categoryService;
-        this.productService = productService;
-    }
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -106,7 +96,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 
         User adminUser = User.builder()
                 .email("admin@gmail.com")
-                .password("1234")
+                .password(passwordEncoder.encode("1234"))
                 .firstName("Administrator")
                 .lastName("Kebab Islas Canarias")
                 .roles(Collections.singletonList(adminRole))

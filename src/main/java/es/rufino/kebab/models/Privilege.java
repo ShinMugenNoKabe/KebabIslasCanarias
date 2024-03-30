@@ -1,8 +1,10 @@
 package es.rufino.kebab.models;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -11,6 +13,8 @@ import java.util.List;
  */
 @Entity
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Table(name = "privileges")
 public class Privilege {
@@ -19,7 +23,7 @@ public class Privilege {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private final String name;
+    private String name;
 
     @ManyToMany(mappedBy = "privileges", fetch = FetchType.EAGER)
     private List<Role> roles;
