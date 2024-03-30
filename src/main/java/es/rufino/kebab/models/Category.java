@@ -1,10 +1,8 @@
 package es.rufino.kebab.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  *
@@ -12,14 +10,15 @@ import jakarta.persistence.*;
  */
 @Entity
 @Data
+@NoArgsConstructor
 @Table(name = "categories")
 public class Category {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    private final String name;
+
+    private String name;
 
     public Category(String name) {
         this.name = name;

@@ -1,11 +1,12 @@
 package es.rufino.kebab.models;
 
+import es.rufino.kebab.controllers.ProductController;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -15,51 +16,42 @@ import java.math.RoundingMode;
  */
 @Entity
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "products")
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     @ManyToOne
     private Category category;
 
     private String name;
-    private Boolean available;
+    private Boolean isAvailable;
     private String image;
 
     private BigDecimal price;
     private Double salePercentage;
-    private BigDecimal discountedPrice;
 
     public Product(
             String name,
             Double price,
             String image,
             Double salePercentage,
-            Boolean available,
-            Category category
-    ) {
-        this(name, BigDecimal.valueOf(price), image, salePercentage, available, category);
-    }
-
-    public Product(
-            String name,
-            BigDecimal price,
-            String image,
-            Double salePercentage,
-            Boolean available,
+            Boolean isAvailable,
             Category category
     ) {
         this.name = name;
-        this.price = price;
+        this.price = BigDecimal.valueOf(price);
         this.image = image;
         this.salePercentage = salePercentage;
-        this.discountedPrice = calculateDiscountedPrice();
-        this.available = available;
+        this.isAvailable = isAvailable;
         this.category = category;
     }
+
 
     private BigDecimal calculateDiscountedPrice() {
         if (priceIsNotDiscounted()) {
@@ -79,6 +71,12 @@ public class Product {
 
     public boolean hasImageAttached() {
         return !getImage().isEmpty();
+    }
+
+    public ProductController.ProductResponse convertToProductResponse() {
+        return new ProductController.ProductResponse(
+                getId(), getName(), getImage(), getPrice(), calculateDiscountedPrice(), getSalePercentage()
+        );
     }
 
 }

@@ -4,13 +4,13 @@ import es.rufino.kebab.models.Product;
 import es.rufino.kebab.services.CategoryService;
 import es.rufino.kebab.services.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,72 +25,37 @@ public class ProductController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<ProductsResponse> findAll(ProductFilter productFilter) {
+    public ResponseEntity<ProductsResponseWrapper> findAll(ProductsRequest productRequest) {
+        List<Product> products = productService.findAll(productRequest);
 
-        List<Product> productosEncontrados = new ArrayList<>();
-        //productService.buscarPorNombreAdministrador(productFilter.name());
+        List<ProductResponse> productsResponse = products.stream()
+                .map(Product::convertToProductResponse)
+                .toList();
 
-        System.out.println(productFilter);
-
-//        // Si se ha introducido categoría
-//        if (category_id != null && !category_id.equals(0)) {
-//            Category categoria = categoryService.buscarPorId(category_id);
-//
-//            if (administrador != null) {
-//                productosEncontrados = productService.buscarPorNombreEIdCategoriaAdministrador(name, categoria);
-//            } else {
-//                productosEncontrados = productService.buscarPorNombreEIdCategoria(name, categoria);
-//            }
-//        } else {
-//            if (administrador != null) {
-//                productosEncontrados = productService.buscarPorNombreAdministrador(name);
-//            } else {
-//                productosEncontrados = productService.buscarPorNombre(name);
-//            }
-//        }
-//
-//        // Si se ha introducido un orden
-//        if (orden != null && !orden.equals("0")) {
-//            Comparator comparadorPorPrecio = new ComparadorPorPrecio();
-//
-//            if (orden.equals("ascendente")) {
-//                // Ordena la lista de forma ascendente
-//                productosEncontrados.sort(comparadorPorPrecio);
-//            } else if (orden.equals("descendente")) {
-//                // Ordena la lista de forma ascendente
-//                productosEncontrados.sort(comparadorPorPrecio.reversed());
-//            }
-//        }
-//
-//        // Filtrado de precio entre precio mínimo y máximo
-//        if (precio_min != null && precio_max != null) {
-//            productosEncontrados.removeIf((p) -> p.getPrecioConDescuento() < precio_min || p.getPrecioConDescuento() > precio_max);
-//        }
-//
-//        // Filtrado únicamente de productos en oferta
-//        if (en_oferta) {
-//            productosEncontrados.removeIf((p) -> p.getPorcentajeDeOferta().equals(0.0));
-//        }
-
-        return ResponseEntity.ok(new ProductsResponse(productosEncontrados));
+        return ResponseEntity.ok(new ProductsResponseWrapper(productsResponse));
     }
 
-    public record ProductsResponse(List<Product> products) {
-    }
-
-    public record ProductFilter(
+    public record ProductsRequest(
             String name,
             Integer category_id,
-            SortOrder sortOrder,
+            Sort.Direction sortOrder,
             BigDecimal minimumPrice,
             BigDecimal maximumPrice,
             Boolean isOnSale
     ) {
     }
 
-    private enum SortOrder {
-        ASC,
-        DESC
+    public record ProductsResponseWrapper(List<ProductResponse> products) {
+    }
+
+    public record ProductResponse(
+            Long id,
+            String name,
+            String image,
+            BigDecimal price,
+            BigDecimal discountedPrice,
+            Double salePercentage
+    ) {
     }
 
 }
