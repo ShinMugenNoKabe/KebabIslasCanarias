@@ -31,8 +31,9 @@ public class ApplicationConfiguration {
     private final UserRepository userRepository;
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        return username -> userRepository.findFirstByEmail(username)
+    public UserDetailsService userDetailsService() throws UsernameNotFoundException {
+        return username -> userRepository
+                .findFirstByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("The user does not exists."));
     }
 

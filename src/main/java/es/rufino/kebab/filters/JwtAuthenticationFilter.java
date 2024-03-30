@@ -1,6 +1,7 @@
 package es.rufino.kebab.filters;
 
 import es.rufino.kebab.services.JwtService;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -44,10 +46,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         jwtToken = authHeader.substring(7); // 7 because Bearer plus space has 7 characters
-        userEmail = jwtService.extractUsername(jwtToken);
+
+        try {
+            userEmail = jwtService.extractUsername(jwtToken);
+        } catch (ExpiredJwtException ex) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         if (userEmail != null && !isUserAuthenticated()) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+            UserDetails userDetails;
+
+            // Check if the user actually exists too
+            try {
+                userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+            } catch (UsernameNotFoundException ex) {
+                filterChain.doFilter(request, response);
+                return;
+            }
 
             if (jwtService.isTokenValid(jwtToken, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(

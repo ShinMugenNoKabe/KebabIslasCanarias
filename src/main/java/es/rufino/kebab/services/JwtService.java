@@ -38,7 +38,7 @@ public class JwtService {
             UserDetails userDetails
     ) {
         Date currentDate = new Date(System.currentTimeMillis());
-        Date expirationDate = new Date(System.currentTimeMillis() + 1000 * 60 * 24); // 24 hours since now
+        Date expirationDate = new Date(currentDate.getTime() + (1000 * 60 * 60 * 24)); // 24 hours since now
 
         return Jwts.builder()
                 .claims(extraClaims)
