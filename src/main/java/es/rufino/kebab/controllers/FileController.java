@@ -1,6 +1,7 @@
 package es.rufino.kebab.controllers;
 
 import es.rufino.kebab.services.StorageService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.MediaTypeFactory;
@@ -13,13 +14,10 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @RestController
 @RequestMapping("api/v1/files")
+@RequiredArgsConstructor
 public class FileController {
 
     private final StorageService storageService;
-
-    public FileController(StorageService storageService) {
-        this.storageService = storageService;
-    }
 
     @GetMapping("/{filename:.+}")
     public ResponseEntity<Resource> serveFile(@PathVariable String filename) {

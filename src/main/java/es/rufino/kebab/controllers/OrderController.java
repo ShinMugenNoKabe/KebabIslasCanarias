@@ -4,6 +4,7 @@ import es.rufino.kebab.models.Order;
 import es.rufino.kebab.services.OrderService;
 import es.rufino.kebab.services.ProductService;
 import es.rufino.kebab.services.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import java.security.Principal;
  */
 @RestController
 @RequestMapping("/api/v1/orders")
+@RequiredArgsConstructor
 public class OrderController {
 
     // TODO: Ordenar
@@ -23,18 +25,6 @@ public class OrderController {
     private final ProductService productService;
     private final OrderService orderService;
     private final UserController userController;
-
-    public OrderController(
-            ProductService productService,
-            UserService userService,
-            OrderService orderService,
-            UserController userController
-    ) {
-        this.productService = productService;
-        this.userService = userService;
-        this.orderService = orderService;
-        this.userController = userController;
-    }
 
     // TODO: Cambiar
     @PostMapping("/realizar-pedido")

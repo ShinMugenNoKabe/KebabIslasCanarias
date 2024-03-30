@@ -4,6 +4,7 @@ import es.rufino.kebab.exceptions.ResourceNotFoundException;
 import es.rufino.kebab.models.Category;
 import es.rufino.kebab.models.Product;
 import es.rufino.kebab.repositories.ProductRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,15 +14,11 @@ import java.util.List;
  * @author Rufino Serrano Cañas
  */
 @Service
+@RequiredArgsConstructor
 public class ProductService {
 
     private final ProductRepository productRepository;
     private final StorageService storageService;
-
-    public ProductService(ProductRepository productRepository, StorageService storageService) {
-        this.productRepository = productRepository;
-        this.storageService = storageService;
-    }
 
     public Product findById(Long id) {
         return productRepository

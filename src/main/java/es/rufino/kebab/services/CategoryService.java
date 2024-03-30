@@ -3,6 +3,7 @@ package es.rufino.kebab.services;
 import es.rufino.kebab.exceptions.ResourceNotFoundException;
 import es.rufino.kebab.models.Category;
 import es.rufino.kebab.repositories.CategoryRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,13 +13,10 @@ import java.util.List;
  * @author Rufino Serrano Cañas
  */
 @Service
+@RequiredArgsConstructor
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
-
-    public CategoryService(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-    }
 
     public Category findById(Long id) {
         return categoryRepository

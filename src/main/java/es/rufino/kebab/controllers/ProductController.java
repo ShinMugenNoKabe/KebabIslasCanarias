@@ -3,6 +3,7 @@ package es.rufino.kebab.controllers;
 import es.rufino.kebab.models.Product;
 import es.rufino.kebab.services.CategoryService;
 import es.rufino.kebab.services.ProductService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,18 +18,11 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("api/v1/products")
+@RequiredArgsConstructor
 public class ProductController {
 
     private final ProductService productService;
     private final CategoryService categoryService;
-
-    public ProductController(
-            ProductService productService,
-            CategoryService categoryService
-    ) {
-        this.productService = productService;
-        this.categoryService = categoryService;
-    }
 
     @GetMapping
     public ResponseEntity<ProductsResponse> findAll(ProductFilter productFilter) {

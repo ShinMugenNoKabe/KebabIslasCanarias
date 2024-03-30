@@ -4,6 +4,7 @@ import es.rufino.kebab.exceptions.ResourceNotFoundException;
 import es.rufino.kebab.models.Order;
 import es.rufino.kebab.models.User;
 import es.rufino.kebab.repositories.OrderRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -14,13 +15,10 @@ import java.util.List;
  * @author Rufino Serrano Cañas
  */
 @Service
+@RequiredArgsConstructor
 public class OrderService {
 
     private final OrderRepository orderRepository;
-
-    public OrderService(OrderRepository orderRepository) {
-        this.orderRepository = orderRepository;
-    }
 
     public Order insert(Order newOrder) {
         return orderRepository.save(newOrder);
