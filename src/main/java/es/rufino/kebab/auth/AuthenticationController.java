@@ -1,5 +1,8 @@
 package es.rufino.kebab.auth;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,10 +13,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("api/v1/auth")
 @RequiredArgsConstructor
+@Tag(name = "Authentication")
 public class AuthenticationController {
 
     private final AuthenticationService authenticationservice;
 
+    @Operation(
+            description = "Registers a new user in the system. A new JWT token will be generated.",
+            summary = "Register new user",
+            responses = {
+                    @ApiResponse(description = "Success", responseCode = "200", useReturnTypeSchema = true),
+                    @ApiResponse(description = "User email already exists", responseCode = "400")
+            }
+    )
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
             @RequestBody RegisterRequest registerRequest
@@ -21,6 +33,14 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationservice.register(registerRequest));
     }
 
+    @Operation(
+            description = "Logs in into the system with the email and password of an user. A new JWT token will be generated.",
+            summary = "Log in",
+            responses = {
+                    @ApiResponse(description = "Success", responseCode = "200", useReturnTypeSchema = true),
+                    @ApiResponse(description = "User email already exists", responseCode = "400")
+            }
+    )
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(
             @RequestBody AuthenticationRequest authRequest
