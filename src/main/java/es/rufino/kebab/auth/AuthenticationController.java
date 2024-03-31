@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Authentication")
 public class AuthenticationController {
 
-    private final AuthenticationService authenticationservice;
+    private final AuthenticationService authenticationService;
 
     @Operation(
             description = "Registers a new user in the system. A new JWT token will be generated.",
@@ -30,7 +30,7 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> register(
             @RequestBody RegisterRequest registerRequest
     ) {
-        return ResponseEntity.ok(authenticationservice.register(registerRequest));
+        return ResponseEntity.ok(authenticationService.register(registerRequest));
     }
 
     @Operation(
@@ -45,7 +45,7 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> authenticate(
             @RequestBody AuthenticationRequest authRequest
     ) {
-        return ResponseEntity.ok(authenticationservice.authenticate(authRequest));
+        return ResponseEntity.ok(authenticationService.authenticate(authRequest));
     }
 
     public record AuthenticationResponse(String token) {

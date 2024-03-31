@@ -22,7 +22,6 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
-    private final CategoryService categoryService;
 
     @GetMapping
     public ResponseEntity<ProductsResponseWrapper> findAll(ProductsRequest productRequest) {
