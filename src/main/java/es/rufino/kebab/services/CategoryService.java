@@ -18,7 +18,7 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    public Category findById(Long id) {
+    public Category findById(Long id) throws ResourceNotFoundException {
         return categoryRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));

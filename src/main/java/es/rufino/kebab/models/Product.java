@@ -33,7 +33,7 @@ public class Product {
     private String image;
 
     private BigDecimal price;
-    private Double salePercentage;
+    private Double salePercentage = 0.0;
 
     public Product(
             String name,

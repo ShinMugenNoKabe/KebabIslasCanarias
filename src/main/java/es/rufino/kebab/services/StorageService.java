@@ -1,6 +1,7 @@
 package es.rufino.kebab.services;
 
 import org.springframework.core.io.Resource;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,7 +22,7 @@ public interface StorageService {
 
     void init();
 
-    String store(MultipartFile file);
+    String store(@NonNull MultipartFile file);
 
     Stream<Path> loadAll();
 

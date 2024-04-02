@@ -12,8 +12,19 @@ public class ProductMapper {
                 product.getImage(),
                 product.getPrice(),
                 product.calculateDiscountedPrice(),
-                product.getSalePercentage()
+                product.getSalePercentage(),
+                new ProductController.CategoryResponseDto(product.getCategory().getId(), product.getCategory().getName())
         );
+    }
+
+    public static Product toProduct(ProductController.ProductRequestDto productRequest, String imageFilename) {
+        return Product.builder()
+                .name(productRequest.name())
+                .price(productRequest.price())
+                .salePercentage(productRequest.salePercentage())
+                .isAvailable(productRequest.isAvailable())
+                .image(imageFilename)
+                .build();
     }
 
 }

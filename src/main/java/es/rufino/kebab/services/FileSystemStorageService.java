@@ -7,11 +7,11 @@ import es.rufino.kebab.exceptions.storage.StorageFileNotFoundException;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.MediaType;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.UnsupportedMediaTypeStatusException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,11 +53,7 @@ public class FileSystemStorageService implements StorageService {
      * @return Filename saved in the system
      */
     @Override
-    public String store(MultipartFile file) {
-        if (file == null) {
-            throw new UnsupportedMediaTypeStatusException("The uploaded file is empty.");
-        }
-
+    public String store(@NonNull MultipartFile file) {
         if (!fileIsImage(file)) {
             throw new FileIsNotImageException("The file is not an image.", ACCEPTED_MEDIA_TYPES);
         }
