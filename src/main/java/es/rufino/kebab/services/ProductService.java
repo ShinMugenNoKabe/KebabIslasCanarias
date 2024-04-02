@@ -35,8 +35,8 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public List<Product> findAll(ProductController.ProductsRequest productsRequest) {
-        return productRepository.findAll(getProductSpecifications(productsRequest));
+    public List<Product> findAll(ProductController.ProductsRequestDto productsRequestDto) {
+        return productRepository.findAll(getProductSpecifications(productsRequestDto));
     }
 
     public Product insert(Product newProduct) {
@@ -64,32 +64,32 @@ public class ProductService {
     }
 
     private Specification<Product> getProductSpecifications(
-            ProductController.ProductsRequest productsRequest
+            ProductController.ProductsRequestDto productsRequestDto
     ) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (productsRequest.name() != null && !productsRequest.name().isEmpty()) {
-                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + productsRequest.name().toLowerCase() + "%"));
+            if (productsRequestDto.name() != null && !productsRequestDto.name().isEmpty()) {
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + productsRequestDto.name().toLowerCase() + "%"));
             }
 
-            if (productsRequest.category_id() != null) {
-                predicates.add(criteriaBuilder.equal(root.get("category").get("id"), productsRequest.category_id()));
+            if (productsRequestDto.category_id() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("category").get("id"), productsRequestDto.category_id()));
             }
 
-            if (productsRequest.minimumPrice() != null) {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), productsRequest.minimumPrice()));
+            if (productsRequestDto.minimumPrice() != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), productsRequestDto.minimumPrice()));
             }
 
-            if (productsRequest.maximumPrice() != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), productsRequest.maximumPrice()));
+            if (productsRequestDto.maximumPrice() != null) {
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), productsRequestDto.maximumPrice()));
             }
 
             predicates.add(criteriaBuilder.isTrue(root.get("isAvailable"))); // TODO: Check if is admin
 
-            if (productsRequest.sortOrder() != null) {
+            if (productsRequestDto.sortOrder() != null) {
                 Order priceOrder =
-                        productsRequest.sortOrder() == Sort.Direction.ASC
+                        productsRequestDto.sortOrder() == Sort.Direction.ASC
                                 ? criteriaBuilder.asc(root.get("price"))
                                 : criteriaBuilder.desc(root.get("price"));
 

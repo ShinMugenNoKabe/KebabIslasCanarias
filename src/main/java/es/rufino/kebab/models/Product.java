@@ -1,6 +1,5 @@
 package es.rufino.kebab.models;
 
-import es.rufino.kebab.controllers.ProductController;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,7 +52,7 @@ public class Product {
     }
 
 
-    private BigDecimal calculateDiscountedPrice() {
+    public BigDecimal calculateDiscountedPrice() {
         if (priceIsNotDiscounted()) {
             return getPrice();
         }
@@ -71,12 +70,6 @@ public class Product {
 
     public boolean hasImageAttached() {
         return !getImage().isEmpty();
-    }
-
-    public ProductController.ProductResponse convertToProductResponse() {
-        return new ProductController.ProductResponse(
-                getId(), getName(), getImage(), getPrice(), calculateDiscountedPrice(), getSalePercentage()
-        );
     }
 
 }

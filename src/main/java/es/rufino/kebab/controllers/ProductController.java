@@ -1,7 +1,7 @@
 package es.rufino.kebab.controllers;
 
+import es.rufino.kebab.controllers.mappers.ProductMapper;
 import es.rufino.kebab.models.Product;
-import es.rufino.kebab.services.CategoryService;
 import es.rufino.kebab.services.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -24,17 +24,17 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public ResponseEntity<ProductsResponseWrapper> findAll(ProductsRequest productRequest) {
+    public ResponseEntity<ProductsResponseDtoWrapper> findAll(ProductsRequestDto productRequest) {
         List<Product> products = productService.findAll(productRequest);
 
-        List<ProductResponse> productsResponse = products.stream()
-                .map(Product::convertToProductResponse)
+        List<ProductResponseDto> productsResponse = products.stream()
+                .map(ProductMapper::toResponseDto)
                 .toList();
 
-        return ResponseEntity.ok(new ProductsResponseWrapper(productsResponse));
+        return ResponseEntity.ok(new ProductsResponseDtoWrapper(productsResponse));
     }
 
-    public record ProductsRequest(
+    public record ProductsRequestDto(
             String name,
             Integer category_id,
             Sort.Direction sortOrder,
@@ -44,10 +44,10 @@ public class ProductController {
     ) {
     }
 
-    public record ProductsResponseWrapper(List<ProductResponse> products) {
+    public record ProductsResponseDtoWrapper(List<ProductResponseDto> products) {
     }
 
-    public record ProductResponse(
+    public record ProductResponseDto(
             Long id,
             String name,
             String image,
