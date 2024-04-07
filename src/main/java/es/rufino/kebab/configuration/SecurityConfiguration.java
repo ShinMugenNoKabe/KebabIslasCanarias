@@ -32,7 +32,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorizeHttpRequests -> {
                     authorizeHttpRequests
                             .requestMatchers(HttpMethod.POST,
-                                    "/api/v1/files/**"
+                                    "/api/v1/files/**",
+                                    "/api/v1/products/**"
                             )
                             .hasAnyRole("ADMIN");
 

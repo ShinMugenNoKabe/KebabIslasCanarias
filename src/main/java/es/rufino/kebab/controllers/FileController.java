@@ -45,6 +45,7 @@ public class FileController {
             summary = "Get image",
             responses = {
                     @ApiResponse(description = "Success", responseCode = "200", useReturnTypeSchema = true),
+                    @ApiResponse(description = "Forbidden", responseCode = "403"),
                     @ApiResponse(description = "File is not an image", responseCode = "415"),
                     @ApiResponse(description = "Internal Server Error", responseCode = "500")
             }

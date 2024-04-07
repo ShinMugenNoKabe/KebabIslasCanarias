@@ -25,7 +25,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final StorageService storageService;
 
-    public Product findById(Long id) {
+    public Product findById(Long id) throws ResourceNotFoundException {
         return productRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("The product was not found."));

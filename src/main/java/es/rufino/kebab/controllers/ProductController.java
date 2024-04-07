@@ -5,6 +5,10 @@ import es.rufino.kebab.models.Product;
 import es.rufino.kebab.services.CategoryService;
 import es.rufino.kebab.services.ProductService;
 import es.rufino.kebab.services.StorageService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -22,13 +26,22 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/products")
 @RequiredArgsConstructor
+@Tag(name = "Products")
 public class ProductController {
 
     private final ProductService productService;
     private final CategoryService categoryService;
     private final StorageService storageService;
 
+    @Operation(
+            description = "Gets a list of products based on the introduced filters.",
+            summary = "Get products",
+            responses = {
+                    @ApiResponse(description = "Success", responseCode = "200")
+            }
+    )
     @GetMapping
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<ProductsResponseDtoWrapper> findAll(ProductsRequestDto productsRequest) {
         List<Product> products = productService.findAll(productsRequest);
 
@@ -39,9 +52,29 @@ public class ProductController {
         return ResponseEntity.ok(new ProductsResponseDtoWrapper(productsResponse));
     }
 
+    @Operation(
+            description = "Inserts a new product in the system, with an image if needed. Only administrators can upload images.",
+            summary = "Insert product",
+            responses = {
+                    @ApiResponse(description = "Success", responseCode = "200"),
+                    @ApiResponse(description = "Forbidden", responseCode = "403")
+            }
+    )
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    //@SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<ProductResponseDto> insert(ProductRequestDto productRequest) {
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<ProductResponseDto> insertProduct(
+            @RequestPart(value = "name") String name,
+            @RequestPart(value = "price") BigDecimal price,
+            @RequestPart(value = "discountedPrice") BigDecimal discountedPrice,
+            @RequestPart(value = "salePercentage") Double salePercentage,
+            @RequestPart(value = "isAvailable") Boolean isAvailable,
+            @RequestPart(value = "categoryId") Long categoryId,
+            @RequestPart(value = "image") MultipartFile image
+    ) {
+        ProductRequestDto productRequest = new ProductRequestDto(
+                name, price, discountedPrice, salePercentage, isAvailable, categoryId, image
+        );
+
         String newImageFilename = null;
 
         if (productRequest.image() != null) {
@@ -70,12 +103,12 @@ public class ProductController {
     }
 
     public record ProductRequestDto(
-            String name,
-            BigDecimal price,
-            BigDecimal discountedPrice,
-            Double salePercentage,
-            Boolean isAvailable,
-            Long categoryId,
+            @RequestPart(value = "name") String name,
+            @RequestPart(value = "price") BigDecimal price,
+            @RequestPart(value = "discountedPrice") BigDecimal discountedPrice,
+            @RequestPart(value = "salePercentage") Double salePercentage,
+            @RequestPart(value = "isAvailable") Boolean isAvailable,
+            @RequestPart(value = "categoryId") Long categoryId,
             @RequestPart(value = "image") MultipartFile image
     ) {
     }
