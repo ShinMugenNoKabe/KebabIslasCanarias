@@ -55,8 +55,12 @@ public class ProductService {
         productRepository.deleteById(product.getId());
     }
 
-    public void deleteById(Long id) {
-        productRepository.deleteById(id);
+    public void deleteById(Long id) throws ResourceNotFoundException {
+        try {
+            productRepository.deleteById(id);
+        } catch (IllegalArgumentException ex) {
+            throw new ResourceNotFoundException("The product was not found.");
+        }
     }
 
     public Product update(Product product) {

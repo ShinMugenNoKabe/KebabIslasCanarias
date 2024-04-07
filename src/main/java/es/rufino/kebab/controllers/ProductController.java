@@ -89,6 +89,21 @@ public class ProductController {
         return new ResponseEntity<>(ProductMapper.toResponseDto(newProduct), HttpStatus.CREATED);
     }
 
+    @Operation(
+            description = "Deletes one product based on its Id.",
+            summary = "Delete product",
+            responses = {
+                    @ApiResponse(description = "Success", responseCode = "200"),
+                    @ApiResponse(description = "Product not found", responseCode = "404")
+            }
+    )
+    @DeleteMapping(value="/{id}")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        productService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
     public record ProductsRequestDto(
             String name,
             Integer category_id,

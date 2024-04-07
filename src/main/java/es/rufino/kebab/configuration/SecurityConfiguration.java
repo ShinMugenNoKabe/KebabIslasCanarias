@@ -38,6 +38,12 @@ public class SecurityConfiguration {
                             .hasAnyRole("ADMIN");
 
                     authorizeHttpRequests
+                            .requestMatchers(HttpMethod.DELETE,
+                                    "/api/v1/products/**"
+                            )
+                            .hasAnyRole("ADMIN");
+
+                    authorizeHttpRequests
                             .requestMatchers(
                                     "/api/v1/auth/**",
                                     "/api/v1/files/image/**",
