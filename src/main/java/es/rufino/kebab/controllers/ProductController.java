@@ -34,6 +34,21 @@ public class ProductController {
     private final StorageService storageService;
 
     @Operation(
+            description = "Gets one product based on its Id.",
+            summary = "Get product",
+            responses = {
+                    @ApiResponse(description = "Success", responseCode = "200"),
+                    @ApiResponse(description = "Product not found", responseCode = "404")
+            }
+    )
+    @GetMapping(value="/{id}")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<ProductResponseDto> findById(@PathVariable Long id) {
+        Product product = productService.findById(id);
+        return ResponseEntity.ok(ProductMapper.toResponseDto(product));
+    }
+
+    @Operation(
             description = "Gets a list of products based on the introduced filters.",
             summary = "Get products",
             responses = {
